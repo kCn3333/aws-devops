@@ -1,0 +1,113 @@
+# Terraform VPC Module
+
+## Overview
+
+Built a reusable Terraform VPC module deploying a production-grade network
+across 2 Availability Zones with public and private subnet tiers.
+
+## What Was Built
+
+```
+VPC: 10.0.0.0/16 (eu-north-1)
+├── public-1a:  10.0.1.0/24   → IGW → Internet
+├── public-1b:  10.0.2.0/24   → IGW → Internet
+├── private-1a: 10.0.10.0/24  → local only
+└── private-1b: 10.0.20.0/24  → local only
+```
+
+Resources created: VPC, IGW, 4 subnets, 2 route tables, 4 route table associations.
+
+## Module Structure
+
+```
+terraform/modules/vpc/
+├── main.tf       # AWS resources
+├── variables.tf  # Module inputs
+├── outputs.tf    # Module outputs
+└── README.md
+```
+
+## Key Terraform Patterns
+
+### count — multiple resources from a list
+```hcl
+resource "aws_subnet" "public" {
+  count             = length(var.public_subnet_cidrs)
+  cidr_block        = var.public_subnet_cidrs[count.index]
+  availability_zone = var.availability_zones[count.index]
+}
+```
+
+### dynamic block — conditional configuration block
+```hcl
+dynamic "route" {
+  for_each = var.enable_nat_gateway ? [1] : []
+  content {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.this[0].id
+  }
+}
+```
+
+### Conditional resource creation
+```hcl
+resource "aws_nat_gateway" "this" {
+  count = var.enable_nat_gateway ? 1 : 0
+}
+```
+
+## Module Invocation
+
+```hcl
+# terraform/environments/dev/main.tf
+module "vpc" {
+  source = "../../modules/vpc"
+
+  project_name         = "aws-devops"
+  environment          = "dev"
+  vpc_cidr             = "10.0.0.0/16"
+  public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+  private_subnet_cidrs = ["10.0.10.0/24", "10.0.20.0/24"]
+  availability_zones   = ["eu-north-1a", "eu-north-1b"]
+  enable_nat_gateway   = false
+}
+```
+
+## Networking Concepts
+
+| Resource | Purpose |
+|----------|---------|
+| VPC | Isolated virtual network — your private AWS environment |
+| Public Subnet | Has route to IGW — resources reachable from internet |
+| Private Subnet | No route to IGW — internal resources only |
+| IGW | Internet Gateway — VPC's door to the internet |
+| Route Table | Rules for where to send network traffic |
+| NAT Gateway | Outbound-only internet for private subnets (~$32/month, disabled on Free Tier) |
+
+## CIDR Planning Rules
+
+- Leave gaps between subnet ranges for future expansion
+- Private subnets: `10.0.10.x`, `10.0.20.x` — not `10.0.3.x` (leaves room for more public)
+- AWS reserves 5 addresses per subnet — `/28` gives only 11 usable addresses
+- `/24` = 251 usable addresses — standard for most subnets
+
+## Outputs
+
+```
+vpc_id             = "vpc-0898ffef7378885a9"
+public_subnet_ids  = ["subnet-0061bca0d4a30347b", "subnet-07d110f0d6544764e"]
+private_subnet_ids = ["subnet-044371234e05e9926", "subnet-054c245c13b7e8d4f"]
+```
+
+## Common Mistakes
+
+- All resources in public subnets — databases should never be publicly accessible
+- Single AZ deployment — one AZ failure takes down everything
+- Overlapping CIDRs — prevents future VPC peering
+- No room for expansion — plan CIDR ranges with growth in mind
+
+## Next Lesson
+
+**Lesson 04 — EC2 Module**
+Deploy web server into the VPC: Security Groups, Key Pair, IAM Instance Profile,
+nginx via Ansible.
