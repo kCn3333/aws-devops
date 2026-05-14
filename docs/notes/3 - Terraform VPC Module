@@ -106,8 +106,4 @@ private_subnet_ids = ["subnet-044371234e05e9926", "subnet-054c245c13b7e8d4f"]
 - Overlapping CIDRs — prevents future VPC peering
 - No room for expansion — plan CIDR ranges with growth in mind
 
-## Next Lesson
-
-**Lesson 04 — EC2 Module**
-Deploy web server into the VPC: Security Groups, Key Pair, IAM Instance Profile,
-nginx via Ansible.
+---
