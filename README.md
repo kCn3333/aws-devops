@@ -20,6 +20,8 @@ provisioned with Terraform and configured with Ansible.
 | IAM              | AWS IAM            | Least-privilege roles and policies |
 
 ## Repository Structure
+
+```
 ├── terraform/
 │   ├── modules/        # Reusable Terraform modules
 │   ├── environments/   # Dev and prod configurations
@@ -29,6 +31,7 @@ provisioned with Terraform and configured with Ansible.
 │   ├── playbooks/      # Task playbooks
 │   └── roles/          # Reusable Ansible roles
 └── docs/notes/         # Learning notes
+```
 
 ## Getting Started
 
