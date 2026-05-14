@@ -1,0 +1,10 @@
+---
+- hosts: all
+  vars_files:
+    - variables.yaml 
+  vars:
+    variable1: "example variable value"
+  tasks:
+    - name: Variables in Ansible
+      debug:
+        msg: "This is a variable: {{ variable1 }}"

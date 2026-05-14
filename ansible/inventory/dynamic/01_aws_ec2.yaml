@@ -1,0 +1,12 @@
+plugin: amazon.aws.aws_ec2
+
+regions:
+  - eu-north-1
+
+keyed_groups:
+  - key: tags.Name
+    prefix: tag
+  - key: instance_type
+    prefix: type
+  - key: placement.region
+    prefix: aws_region

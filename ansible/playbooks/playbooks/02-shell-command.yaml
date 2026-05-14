@@ -1,0 +1,11 @@
+---
+- hosts: all
+  tasks:
+    - name: Execute a shell command on all hosts
+      action: shell echo "Hello, Ansible!"
+    - name: Get Os version
+      action: shell cat /etc/os-release
+      register: os_version
+    - name: Print Os version
+      debug:
+        var: os_version.stdout
