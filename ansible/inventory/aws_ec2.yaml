@@ -1,0 +1,31 @@
+---
+plugin: amazon.aws.aws_ec2
+
+regions:
+  - eu-north-1
+
+# Filter — only running instances managed by Terraform
+filters:
+  instance-state-name: running
+  tag:ManagedBy: terraform
+
+# Group instances by tags — creates groups like:
+# tag_Environment_dev, tag_Project_aws_devops_portfolio
+keyed_groups:
+  - key: tags.Environment
+    prefix: env
+    separator: "_"
+  - key: tags.Project
+    prefix: project
+    separator: "_"
+  - key: instance_type
+    prefix: type
+    separator: "_"
+
+hostnames:
+  - tag:Name
+  - ip-address
+  - dns-name
+
+compose:
+  ansible_host: public_ip_address

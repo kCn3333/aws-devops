@@ -1,0 +1,4 @@
+---
+# Variables available to all hosts
+project_name: aws-devops-portfolio
+deploy_env: dev  
