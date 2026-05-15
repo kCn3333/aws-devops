@@ -1,0 +1,20 @@
+---
+  - hosts: all
+    vars:
+      system: "Windows"
+    tasks:
+      - name: Check the system
+        debug:
+          msg: "The system is {{ ansible_system }}."
+      - name: Check if the system is Linux
+        debug:
+          msg: "The system is Linux."
+        when: ansible_facts['system'] == system
+      - name: Loop through a list of numbers
+        debug:
+          msg: "Number: {{ item }}"
+        loop: [1, 2, 3, 4, 5]
+      - name: Loop through a list of strings
+        debug:
+          msg: "String: {{ item }}"
+        with_items: ["apple", "banana", "cherry"]

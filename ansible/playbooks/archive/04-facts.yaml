@@ -1,0 +1,15 @@
+---
+- hosts: all
+  tasks:
+    - name: Ansible Kernel, OS and IP facts
+      debug:
+        msg: "Kernel: {{ ansible_kernel }} - OS: {{ ansible_os_family }} - IP: {{ ansible_default_ipv4.address }}"
+    - name: Ansible hostname and uptime facts
+      debug:
+        msg: "Hostname: {{ ansible_hostname }} - Uptime: {{ ansible_uptime_seconds }} seconds"
+    - name: Ansible Distribution and Architecture facts
+      debug:
+        msg: "Distribution: {{ ansible_distribution }} - Architecture: {{ ansible_architecture }}"
+    - name: Ansible memory and CPU facts
+      debug:
+        msg: "Memory: {{ ansible_memtotal_mb }} MB - CPU Cores: {{ ansible_processor_cores }}"
