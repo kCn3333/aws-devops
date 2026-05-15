@@ -16,4 +16,3 @@
   community.general.timezone:
     name: "{{ common_timezone }}"
   become: true
-  
