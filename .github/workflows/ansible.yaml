@@ -24,9 +24,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install ansible-lint
-        run: pip install ansible-lint
+      - name: Install dependencies
+        run: pip install ansible-lint boto3 botocore
+
+      - name: Install Ansible collections
+        run: ansible-galaxy collection install amazon.aws community.general
 
       - name: Run ansible-lint
         run: ansible-lint playbooks/site.yaml
         working-directory: ansible
+        env:
+          ANSIBLE_INVENTORY: inventory/ci_hosts  # static inventory for CI
