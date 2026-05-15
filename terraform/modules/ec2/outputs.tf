@@ -1,11 +1,29 @@
 output "instance_id" {
-  value = "SRV IDs: ${join(", ", aws_instance.kcn_srv[*].id)}"
+  description = "The ID of the EC2 instance"
+  value       = aws_instance.this.id
 }
 
-output "instance_public_ip" {
-  value = "Public IPs: ${join(", ", aws_instance.kcn_srv[*].public_ip)}"
+output "public_ip" {
+  description = "The public IP address of the EC2 instance"
+  value       = aws_instance.this.public_ip
 }
 
-output "dns" {
-  value = "DNS: ${join(", ", aws_instance.kcn_srv[*].public_dns)}"
+output "private_ip" {
+  description = "The private IP address of the EC2 instance"
+  value       = aws_instance.this.private_ip
+}
+
+output "public_dns" {
+  description = "The public DNS name of the EC2 instance"
+  value       = aws_instance.this.public_dns
+}
+
+output "security_group_id" {
+  description = "The ID of the security group"
+  value       = aws_security_group.this.id
+}
+
+output "ami_id" {
+  description = "The AMI ID used for the instance"
+  value       = data.aws_ami.ubuntu.id
 }
