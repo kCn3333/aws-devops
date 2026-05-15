@@ -1,3 +1,5 @@
+# Terraform EC2 Module
+
 ## Overview
 
 Built a reusable EC2 module deploying a hardened Ubuntu 24.04 web server
