@@ -9,3 +9,19 @@ module "vpc" {
   availability_zones   = ["eu-north-1a", "eu-north-1b"]
   enable_nat_gateway   = false
 }
+
+module "ec2" {
+  source = "../../modules/ec2"
+
+  project_name = "aws-devops"
+  environment  = "dev"
+
+  # VPC module outputs wired directly as EC2 module inputs
+  vpc_id    = module.vpc.vpc_id
+  subnet_id = module.vpc.public_subnet_ids[0]
+
+  instance_type    = "t3.micro"
+  key_name         = "aws-devops-dev-key"
+  public_key       = file("~/.ssh/aws-devops-key.pub")
+  root_volume_size = 20
+}
