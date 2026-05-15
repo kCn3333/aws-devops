@@ -53,9 +53,9 @@ resource "aws_iam_role" "github_actions" {
 # -----------------------------------------------------------------------------
 data "aws_iam_policy_document" "github_actions_permissions" {
   statement {
-    sid       = "TerraformStateAccess"
-    effect    = "Allow"
-    actions   = [
+    sid    = "TerraformStateAccess"
+    effect = "Allow"
+    actions = [
       "s3:GetObject",
       "s3:PutObject",
       "s3:DeleteObject",
@@ -75,8 +75,8 @@ data "aws_iam_policy_document" "github_actions_permissions" {
   }
 
   statement {
-    sid     = "IAMAccess"
-    effect  = "Allow"
+    sid    = "IAMAccess"
+    effect = "Allow"
     actions = [
       "iam:CreateRole", "iam:DeleteRole", "iam:GetRole", "iam:UpdateRole",
       "iam:AttachRolePolicy", "iam:DetachRolePolicy", "iam:ListAttachedRolePolicies",
