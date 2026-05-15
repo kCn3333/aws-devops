@@ -1,0 +1,8 @@
+profile: production
+
+exclude_paths:
+  - playbooks/archive/
+
+warn_list:
+  - yaml[truthy]
+  - name[casing]

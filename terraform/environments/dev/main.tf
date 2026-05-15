@@ -22,6 +22,6 @@ module "ec2" {
 
   instance_type    = "t3.micro"
   key_name         = "aws-devops-dev-key"
-  public_key       = file("~/.ssh/aws-devops-key.pub")
+  public_key       = var.ec2_public_key
   root_volume_size = 20
 }
