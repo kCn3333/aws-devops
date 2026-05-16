@@ -1,0 +1,4 @@
+# Copy this file to terraform.tfvars and fill in your values
+# cp terraform.tfvars.example terraform.tfvars
+
+ec2_public_key = "ssh-ed25519 AAAA... your-email@example.com"
