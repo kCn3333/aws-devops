@@ -7,6 +7,7 @@
 .terraform.lock.hcl
 crash.log
 override.tf
+!*.tfvars.example
 
 # Ansible
 *.retry
