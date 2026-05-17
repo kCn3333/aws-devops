@@ -19,11 +19,11 @@ resource "cloudflare_record" "acm_validation" {
   }
 
   zone_id = var.cloudflare_zone_id
-  name    = trimsuffix(each.value.name, ".")   # AWS adds trailing dot — remove it
+  name    = trimsuffix(each.value.name, ".") # AWS adds trailing dot — remove it
   content = trimsuffix(each.value.value, ".")
   type    = each.value.type
   ttl     = 60
-  proxied = false  # MUST be false for ACM validation — Cloudflare cannot proxy DNS records
+  proxied = false # MUST be false for ACM validation — Cloudflare cannot proxy DNS records
 }
 
 # -----------------------------------------------------------------------------
