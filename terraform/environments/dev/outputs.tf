@@ -32,3 +32,13 @@ output "ssh_command" {
   description = "Ready-to-use SSH command"
   value       = "ssh -i ~/.ssh/aws-devops-key ubuntu@${module.ec2.public_ip}"
 }
+
+output "alb_target_group_arn" {
+  description = "ALB target group ARN — used by ECS service"
+  value       = module.alb.target_group_arn
+}
+
+output "alb_security_group_id" {
+  description = "ALB security group ID"
+  value       = module.alb.security_group_id
+}
