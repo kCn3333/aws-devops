@@ -2,3 +2,6 @@
 # cp terraform.tfvars.example terraform.tfvars
 
 ec2_public_key = "ssh-ed25519 AAAA... your-email@example.com"
+
+cloudflare_api_token = "your-cloudflare-api-token"
+cloudflare_zone_id   = "your-cloudflare-zone-id"

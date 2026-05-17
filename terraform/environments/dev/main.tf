@@ -25,3 +25,45 @@ module "ec2" {
   public_key       = var.ec2_public_key
   root_volume_size = 20
 }
+
+module "acm" {
+  source      = "../../modules/acm"
+  domain_name = "devops.kcn333.com"
+}
+
+module "alb" {
+  source = "../../modules/alb"
+
+  project_name      = "aws-devops"
+  environment       = "dev"
+  vpc_id            = module.vpc.vpc_id
+  public_subnet_ids = module.vpc.public_subnet_ids
+  certificate_arn   = aws_acm_certificate_validation.this.certificate_arn
+
+  # nginx on EC2 listens on port 80, health check on /
+  target_port          = 80
+  health_check_path    = "/"
+  health_check_matcher = "200"
+}
+
+# -----------------------------------------------------------------------------
+# Register EC2 in ALB target group
+# -----------------------------------------------------------------------------
+resource "aws_lb_target_group_attachment" "ec2" {
+  target_group_arn = module.alb.target_group_arn
+  target_id        = module.ec2.instance_id
+  port             = 80
+}
+
+# -----------------------------------------------------------------------------
+# Allow traffic from ALB SG to EC2 SG
+# Replaces the current "allow all on port 80" rule
+# -----------------------------------------------------------------------------
+resource "aws_vpc_security_group_ingress_rule" "ec2_from_alb" {
+  security_group_id            = module.ec2.security_group_id
+  description                  = "Allow HTTP from ALB only"
+  from_port                    = 80
+  to_port                      = 80
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = module.alb.security_group_id
+}
