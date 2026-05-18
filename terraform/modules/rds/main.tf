@@ -108,7 +108,7 @@ resource "aws_db_instance" "this" {
   multi_az = false
 
   # Backup
-  backup_retention_period = 1    # 1 day backup window
+  backup_retention_period = 1 # 1 day backup window
   backup_window           = "03:00-04:00"
   maintenance_window      = "Mon:04:00-Mon:05:00"
 
