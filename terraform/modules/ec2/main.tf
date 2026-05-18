@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# AMI Data Source — latest Ubuntu 24.04 LTS
+# AMI Data Source - latest Ubuntu 24.04 LTS
 # -----------------------------------------------------------------------------
 data "aws_ami" "ubuntu" {
   most_recent = true
@@ -76,7 +76,7 @@ resource "aws_vpc_security_group_egress_rule" "all" {
 }
 
 # -----------------------------------------------------------------------------
-# IAM Role — EC2 Instance Profile
+# IAM Role - EC2 Instance Profile
 # -----------------------------------------------------------------------------
 data "aws_iam_policy_document" "ec2_assume_role" {
   statement {
@@ -99,7 +99,7 @@ resource "aws_iam_role" "this" {
   }
 }
 
-# Attach SSM policy — allows AWS Systems Manager access (no open SSH port needed)
+# Attach SSM policy - allows AWS Systems Manager access (no open SSH port needed)
 resource "aws_iam_role_policy_attachment" "ssm" {
   role       = aws_iam_role.this.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
@@ -133,7 +133,7 @@ resource "aws_instance" "this" {
   }
 
   metadata_options {
-    http_tokens = "required" # Enforce IMDSv2 — security best practice
+    http_tokens = "required" # Enforce IMDSv2 - security best practice
   }
 
   tags = {

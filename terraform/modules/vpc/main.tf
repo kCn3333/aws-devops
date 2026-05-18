@@ -79,7 +79,7 @@ resource "aws_route_table_association" "public" {
 }
 
 # -----------------------------------------------------------------------------
-# NAT Gateway (optional — disabled by default, incurs cost)
+# NAT Gateway (optional - disabled by default, incurs cost)
 # -----------------------------------------------------------------------------
 resource "aws_eip" "nat" {
   count  = var.enable_nat_gateway ? 1 : 0

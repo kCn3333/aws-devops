@@ -1,5 +1,5 @@
 output "certificate_arn" {
-  description = "ARN of the ACM certificate (unvalidated — use validated_certificate_arn after validation)"
+  description = "ARN of the ACM certificate (unvalidated - use validated_certificate_arn after validation)"
   value       = aws_acm_certificate.this.arn
 }
 

@@ -40,3 +40,9 @@ variable "health_check_matcher" {
   type        = string
   default     = "200"
 }
+
+variable "target_type" {
+  description = "Target group target type: instance (EC2) or ip (Fargate)"
+  type        = string
+  default     = "ip"
+}

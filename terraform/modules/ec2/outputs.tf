@@ -29,6 +29,6 @@ output "ami_id" {
 }
 
 output "iam_role_name" {
-  description = "Name of the EC2 IAM role — used to attach additional policies"
+  description = "Name of the EC2 IAM role - used to attach additional policies"
   value       = aws_iam_role.this.name
 }

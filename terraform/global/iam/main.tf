@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# OIDC Provider — trusts GitHub Actions as identity provider
+# OIDC Provider - trusts GitHub Actions as identity provider
 # -----------------------------------------------------------------------------
 resource "aws_iam_openid_connect_provider" "github" {
   url             = "https://token.actions.githubusercontent.com"
@@ -12,7 +12,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 # -----------------------------------------------------------------------------
-# IAM Role — assumed by GitHub Actions
+# IAM Role - assumed by GitHub Actions
 # -----------------------------------------------------------------------------
 data "aws_iam_policy_document" "github_actions_assume" {
   statement {
@@ -49,7 +49,7 @@ resource "aws_iam_role" "github_actions" {
 }
 
 # -----------------------------------------------------------------------------
-# IAM Policy — what GitHub Actions is allowed to do
+# IAM Policy - what GitHub Actions is allowed to do
 # -----------------------------------------------------------------------------
 data "aws_iam_policy_document" "github_actions_permissions" {
   statement {

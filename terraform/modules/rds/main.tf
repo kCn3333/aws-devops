@@ -9,12 +9,12 @@ resource "random_password" "db" {
 }
 
 # -----------------------------------------------------------------------------
-# Secrets Manager — store credentials as JSON
+# Secrets Manager - store credentials as JSON
 # -----------------------------------------------------------------------------
 resource "aws_secretsmanager_secret" "rds" {
   name                    = "${var.project_name}/${var.environment}/rds"
   description             = "RDS PostgreSQL credentials for ${var.project_name} ${var.environment}"
-  recovery_window_in_days = 0 # Immediate deletion in dev — use 7+ in prod
+  recovery_window_in_days = 0 # Immediate deletion in dev - use 7+ in prod
 
   tags = {
     Name = "${var.project_name}-${var.environment}-rds-secret"
@@ -34,7 +34,7 @@ resource "aws_secretsmanager_secret_version" "rds" {
 }
 
 # -----------------------------------------------------------------------------
-# Security Group — RDS
+# Security Group - RDS
 # -----------------------------------------------------------------------------
 resource "aws_security_group" "rds" {
   name        = "${var.project_name}-${var.environment}-rds-sg"
@@ -65,7 +65,7 @@ resource "aws_vpc_security_group_ingress_rule" "rds_from_app" {
 }
 
 # -----------------------------------------------------------------------------
-# DB Subnet Group — RDS must span at least 2 AZs
+# DB Subnet Group - RDS must span at least 2 AZs
 # -----------------------------------------------------------------------------
 resource "aws_db_subnet_group" "this" {
   name        = "${var.project_name}-${var.environment}-db-subnet-group"
@@ -102,9 +102,9 @@ resource "aws_db_instance" "this" {
   # Network
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = [aws_security_group.rds.id]
-  publicly_accessible    = false # Private subnet — no public access
+  publicly_accessible    = false # Private subnet - no public access
 
-  # High availability — disabled for dev (saves cost)
+  # High availability - disabled for dev (saves cost)
   multi_az = false
 
   # Backup
@@ -112,11 +112,11 @@ resource "aws_db_instance" "this" {
   backup_window           = "03:00-04:00"
   maintenance_window      = "Mon:04:00-Mon:05:00"
 
-  # Deletion protection — disabled for dev
+  # Deletion protection - disabled for dev
   deletion_protection = false
   skip_final_snapshot = var.skip_final_snapshot
 
-  # Performance Insights — free for t3.micro
+  # Performance Insights - free for t3.micro
   performance_insights_enabled = true
 
   tags = {

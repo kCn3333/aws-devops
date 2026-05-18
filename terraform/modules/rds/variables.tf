@@ -55,7 +55,7 @@ variable "allocated_storage" {
 }
 
 variable "skip_final_snapshot" {
-  description = "Skip final snapshot on deletion — set to false in production"
+  description = "Skip final snapshot on deletion - set to false in production"
   type        = bool
   default     = true
 }

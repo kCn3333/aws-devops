@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Security Group — ALB
+# Security Group - ALB
 # -----------------------------------------------------------------------------
 resource "aws_security_group" "alb" {
   name        = "${var.project_name}-${var.environment}-alb-sg"
@@ -61,7 +61,7 @@ resource "aws_lb_target_group" "this" {
   port        = var.target_port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
-  target_type = "instance"
+  target_type = var.target_type
 
   health_check {
     enabled             = true
@@ -88,7 +88,7 @@ resource "aws_lb_listener" "http" {
   port              = 80
   protocol          = "HTTP"
 
-  # Redirect all HTTP to HTTPS — production best practice
+  # Redirect all HTTP to HTTPS - production best practice
   default_action {
     type = "redirect"
     redirect {

@@ -14,7 +14,7 @@ output "db_name" {
 }
 
 output "secret_arn" {
-  description = "Secrets Manager secret ARN — grant read access to ECS task role"
+  description = "Secrets Manager secret ARN - grant read access to ECS task role"
   value       = aws_secretsmanager_secret.rds.arn
 }
 
@@ -24,6 +24,6 @@ output "secret_name" {
 }
 
 output "security_group_id" {
-  description = "RDS security group ID — add ECS SG to allowed_security_group_ids"
+  description = "RDS security group ID - add ECS SG to allowed_security_group_ids"
   value       = aws_security_group.rds.id
 }

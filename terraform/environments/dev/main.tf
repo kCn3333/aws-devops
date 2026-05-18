@@ -1,6 +1,5 @@
 module "vpc" {
-  source = "../../modules/vpc"
-
+  source               = "../../modules/vpc"
   project_name         = "aws-devops"
   environment          = "dev"
   vpc_cidr             = "10.0.0.0/16"
@@ -11,15 +10,11 @@ module "vpc" {
 }
 
 module "ec2" {
-  source = "../../modules/ec2"
-
-  project_name = "aws-devops"
-  environment  = "dev"
-
-  # VPC module outputs wired directly as EC2 module inputs
-  vpc_id    = module.vpc.vpc_id
-  subnet_id = module.vpc.public_subnet_ids[0]
-
+  source           = "../../modules/ec2"
+  project_name     = "aws-devops"
+  environment      = "dev"
+  vpc_id           = module.vpc.vpc_id
+  subnet_id        = module.vpc.public_subnet_ids[0]
   instance_type    = "t3.micro"
   key_name         = "aws-devops-dev-key"
   public_key       = var.ec2_public_key
@@ -40,23 +35,25 @@ module "alb" {
   public_subnet_ids = module.vpc.public_subnet_ids
   certificate_arn   = aws_acm_certificate_validation.this.certificate_arn
 
-  # nginx on EC2 listens on port 80, health check on /
-  target_port          = 80
-  health_check_path    = "/"
+  # clients-api listens on 8080, health check on Spring Boot readiness endpoint
+  target_port          = 8080
+  target_type          = "ip"
+  health_check_path    = "/actuator/health/readiness"
   health_check_matcher = "200"
 }
 
 module "rds" {
-  source = "../../modules/rds"
-
+  source       = "../../modules/rds"
   project_name = "aws-devops"
   environment  = "dev"
+  vpc_id       = module.vpc.vpc_id
+  subnet_ids   = module.vpc.private_subnet_ids
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnet_ids
-
-  # Allow EC2 to connect for testing — ECS SG added in Lesson 10
-  allowed_security_group_ids = [module.ec2.security_group_id]
+  # Allow both EC2 (bastion) and ECS tasks to connect
+  allowed_security_group_ids = [
+    module.ec2.security_group_id,
+    module.ecs.security_group_id
+  ]
 
   db_name             = "clients_db"
   db_username         = "dbadmin"
@@ -66,12 +63,42 @@ module "rds" {
   skip_final_snapshot = true
 }
 
-# IAM policy — allows reading RDS secret from Secrets Manager
-# EC2 instance profile already has SSM; add secrets access
+module "ecs" {
+  source = "../../modules/ecs"
+
+  project_name = "aws-devops"
+  environment  = "dev"
+  vpc_id       = module.vpc.vpc_id
+
+  # Public subnets + public IP because no NAT Gateway
+  subnet_ids       = module.vpc.public_subnet_ids
+  assign_public_ip = true
+
+  # clients-api from Docker Hub
+  container_image = "kcn333/clients-api:latest"
+  container_port  = 8080
+  cpu             = 256
+  memory          = 512
+  desired_count   = 1
+
+  # ALB integration
+  alb_target_group_arn  = module.alb.target_group_arn
+  alb_security_group_id = module.alb.security_group_id
+
+  # Database
+  rds_secret_arn = module.rds.secret_arn
+  rds_endpoint   = module.rds.endpoint
+  db_name        = "clients_db"
+
+  # Spring Boot needs ~60s to start - 90s grace period before health checks
+  health_check_path         = "/actuator/health/readiness"
+  health_check_start_period = 90
+}
+
+# IAM policy - EC2 can read RDS secret (bastion access)
 resource "aws_iam_role_policy" "ec2_secrets" {
   name = "ec2-read-rds-secret"
   role = module.ec2.iam_role_name
-
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -80,15 +107,6 @@ resource "aws_iam_role_policy" "ec2_secrets" {
       Resource = [module.rds.secret_arn]
     }]
   })
-}
-
-# -----------------------------------------------------------------------------
-# Register EC2 in ALB target group
-# -----------------------------------------------------------------------------
-resource "aws_lb_target_group_attachment" "ec2" {
-  target_group_arn = module.alb.target_group_arn
-  target_id        = module.ec2.instance_id
-  port             = 80
 }
 
 # -----------------------------------------------------------------------------
