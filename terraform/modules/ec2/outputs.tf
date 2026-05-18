@@ -27,3 +27,8 @@ output "ami_id" {
   description = "The AMI ID used for the instance"
   value       = data.aws_ami.ubuntu.id
 }
+
+output "iam_role_name" {
+  description = "Name of the EC2 IAM role — used to attach additional policies"
+  value       = aws_iam_role.this.name
+}

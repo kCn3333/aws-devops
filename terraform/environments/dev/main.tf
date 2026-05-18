@@ -46,6 +46,42 @@ module "alb" {
   health_check_matcher = "200"
 }
 
+module "rds" {
+  source = "../../modules/rds"
+
+  project_name = "aws-devops"
+  environment  = "dev"
+
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnet_ids
+
+  # Allow EC2 to connect for testing — ECS SG added in Lesson 10
+  allowed_security_group_ids = [module.ec2.security_group_id]
+
+  db_name             = "clients_db"
+  db_username         = "dbadmin"
+  engine_version      = "17"
+  instance_class      = "db.t3.micro"
+  allocated_storage   = 20
+  skip_final_snapshot = true
+}
+
+# IAM policy — allows reading RDS secret from Secrets Manager
+# EC2 instance profile already has SSM; add secrets access
+resource "aws_iam_role_policy" "ec2_secrets" {
+  name = "ec2-read-rds-secret"
+  role = module.ec2.iam_role_name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["secretsmanager:GetSecretValue"]
+      Resource = [module.rds.secret_arn]
+    }]
+  })
+}
+
 # -----------------------------------------------------------------------------
 # Register EC2 in ALB target group
 # -----------------------------------------------------------------------------

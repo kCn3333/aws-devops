@@ -42,3 +42,13 @@ output "alb_security_group_id" {
   description = "ALB security group ID"
   value       = module.alb.security_group_id
 }
+
+output "rds_endpoint" {
+  description = "RDS endpoint hostname"
+  value       = module.rds.endpoint
+}
+
+output "rds_secret_arn" {
+  description = "Secrets Manager ARN for RDS credentials"
+  value       = module.rds.secret_arn
+}
