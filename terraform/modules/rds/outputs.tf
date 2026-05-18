@@ -27,3 +27,8 @@ output "security_group_id" {
   description = "RDS security group ID - add ECS SG to allowed_security_group_ids"
   value       = aws_security_group.rds.id
 }
+
+output "instance_id" {
+  description = "RDS instance identifier for CloudWatch metrics"
+  value       = aws_db_instance.this.identifier
+}

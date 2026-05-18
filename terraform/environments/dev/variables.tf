@@ -14,3 +14,8 @@ variable "cloudflare_zone_id" {
   description = "Cloudflare Zone ID for kcn333.com"
   type        = string
 }
+
+variable "alarm_email" {
+  description = "Email address for CloudWatch alarm notifications"
+  type        = string
+}

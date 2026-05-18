@@ -67,3 +67,8 @@ output "ecs_log_group" {
   description = "CloudWatch log group for ECS tasks"
   value       = module.ecs.log_group_name
 }
+
+output "dashboard_url" {
+  description = "CloudWatch dashboard URL"
+  value       = module.monitoring.dashboard_url
+}

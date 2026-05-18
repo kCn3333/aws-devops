@@ -95,6 +95,22 @@ module "ecs" {
   health_check_start_period = 90
 }
 
+module "monitoring" {
+  source = "../../modules/monitoring"
+
+  project_name = "aws-devops"
+  environment  = "dev"
+  alarm_email  = var.alarm_email
+
+  ecs_cluster_name = module.ecs.cluster_id
+  ecs_service_name = module.ecs.service_name
+
+  alb_arn_suffix              = module.alb.arn_suffix
+  alb_target_group_arn_suffix = module.alb.target_group_arn_suffix
+
+  rds_instance_id = module.rds.instance_id
+}
+
 # IAM policy - EC2 can read RDS secret (bastion access)
 resource "aws_iam_role_policy" "ec2_secrets" {
   name = "ec2-read-rds-secret"
