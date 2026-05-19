@@ -163,10 +163,13 @@ terraform init && terraform apply
 
 ### 2. Configure secrets in GitHub
 Settings → Secrets and variables → Actions:
+
+```
 AWS_ROLE_ARN     → arn:aws:iam::ACCOUNT:role/github-actions-role
 AWS_REGION       → eu-north-1
 EC2_PUBLIC_KEY   → contents of ~/.ssh/your-key.pub
 ALARM_EMAIL      → your@email.com
+```
 
 ### 3. Provision infrastructure
 
@@ -213,18 +216,6 @@ open https://devops.kcn333.com/swagger-ui/index.html
 Alarms notify via SNS email on state changes (CRITICAL/WARNING thresholds).
 
 ---
-
-## Cost Estimate (eu-north-1)
-
-| Resource | Monthly Cost |
-|----------|-------------|
-| EC2 t3.micro | ~$0 (Free Tier) |
-| RDS db.t3.micro | ~$0 (Free Tier) |
-| ALB | ~$18 |
-| ECS Fargate (256 CPU / 512MB) | ~$8 |
-| Secrets Manager | ~$0.40 |
-| CloudWatch | ~$2 |
-| **Total** | **~$28/month** |
 
 > Run `terraform destroy` when not in use to pause costs.
 
