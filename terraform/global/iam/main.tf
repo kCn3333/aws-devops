@@ -27,7 +27,10 @@ data "aws_iam_policy_document" "github_actions_assume" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:kCn3333/aws-devops:*"]
+      values   = [
+        "repo:kCn3333/aws-devops:*",
+        "repo:kCn3333/clients-api:*"
+      ]
     }
 
     condition {
@@ -91,6 +94,19 @@ data "aws_iam_policy_document" "github_actions_permissions" {
       "iam:TagRole", "iam:UntagRole", "iam:TagPolicy", "iam:TagOpenIDConnectProvider",
       "iam:ListRolePolicies",
       "iam:PassRole"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "ECSDeployAccess"
+    effect = "Allow"
+    actions = [
+      "ecs:DescribeServices",
+      "ecs:UpdateService",
+      "ecs:DescribeTasks",
+      "ecs:ListTasks",
+      "ecs:DescribeTaskDefinition"
     ]
     resources = ["*"]
   }
